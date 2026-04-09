@@ -51,7 +51,6 @@ const WallCalendar = () => {
       if (!prev.start || (prev.start && prev.end)) {
         return { start: key, end: null };
       }
-      // Ensure start < end
       if (key < prev.start) {
         return { start: key, end: prev.start };
       }
@@ -64,72 +63,143 @@ const WallCalendar = () => {
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
 
-  // Spiral rings
-  const RINGS = 15;
+  const RINGS = 17;
 
   return (
-    <div className="flex flex-col items-center">
-      {/* Hook */}
-      <div className="w-4 h-4 rounded-full border-2 border-muted-foreground/40 mb-0" />
-      {/* String */}
-      <div className="w-px h-8 bg-muted-foreground/30" />
+    <div className="flex flex-col items-center select-none">
+      {/* ─── Wall hook ─── */}
+      <div className="relative w-6 h-6 mb-0">
+        {/* Nail / screw head */}
+        <div
+          className="absolute inset-0 rounded-full"
+          style={{
+            background: "radial-gradient(circle at 35% 35%, hsl(0 0% 82%), hsl(0 0% 55%) 70%, hsl(0 0% 40%))",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.35), inset 0 1px 2px rgba(255,255,255,0.4)",
+          }}
+        />
+        {/* Highlight dot */}
+        <div
+          className="absolute w-2 h-2 rounded-full top-1 left-1.5"
+          style={{ background: "radial-gradient(circle, rgba(255,255,255,0.7), transparent 70%)" }}
+        />
+      </div>
 
-      {/* Spiral binding */}
-      <div className="relative w-full max-w-[440px] z-10">
-        <div className="flex justify-between px-6">
+      {/* ─── Hanging string ─── */}
+      <div
+        className="w-[1.5px] h-10"
+        style={{
+          background: "linear-gradient(to bottom, hsl(30 10% 55%), hsl(30 8% 65%), hsl(30 10% 55%))",
+        }}
+      />
+
+      {/* ─── Spiral binding ─── */}
+      <div className="relative w-full max-w-[460px] z-10 h-5">
+        <div className="absolute inset-x-0 flex justify-between px-4 -top-1">
           {Array.from({ length: RINGS }).map((_, i) => (
-            <div key={i} className="relative">
-              <div className="w-3 h-5 border-2 border-muted-foreground/30 rounded-full bg-background" />
+            <div key={i} className="relative flex flex-col items-center">
+              {/* Ring — thin metallic oval */}
+              <div
+                className="w-[7px] h-[18px] rounded-full"
+                style={{
+                  background: "linear-gradient(135deg, hsl(0 0% 78%), hsl(0 0% 92%) 40%, hsl(0 0% 68%) 80%)",
+                  border: "1px solid hsl(0 0% 60%)",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.5)",
+                }}
+              />
             </div>
           ))}
         </div>
       </div>
 
-      {/* Calendar card */}
+      {/* ─── Calendar card ─── */}
       <div
-        className="relative w-full max-w-[440px] -mt-3 bg-calendar-paper rounded-b-lg overflow-hidden transition-shadow duration-300 hover:shadow-2xl"
+        className="relative w-full max-w-[460px] -mt-1 overflow-hidden transition-all duration-500 group"
         style={{
-          boxShadow: "0 12px 40px -8px hsl(var(--calendar-shadow) / 0.35), 0 4px 12px -2px hsl(var(--calendar-shadow) / 0.15)",
-          backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='4' height='4' fill='%23f8f6f0'/%3E%3Crect width='1' height='1' fill='%23f0ece4' opacity='0.3'/%3E%3C/svg%3E\")",
+          borderRadius: "0 0 6px 6px",
+          background: "hsl(var(--calendar-paper))",
+          boxShadow: `
+            0 18px 50px -10px hsl(var(--calendar-shadow) / 0.4),
+            0 8px 20px -4px hsl(var(--calendar-shadow) / 0.2),
+            0 1px 3px 0px hsl(var(--calendar-shadow) / 0.1),
+            inset 0 1px 0 hsl(40 40% 96%),
+            inset 0 -1px 0 hsl(30 10% 85%)
+          `,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E")`,
         }}
       >
-        {/* Hero image */}
-        <div className="relative w-full h-[220px] overflow-hidden">
+        {/* Paper edge highlight (top) */}
+        <div
+          className="absolute top-0 left-0 right-0 h-px"
+          style={{ background: "linear-gradient(90deg, transparent, hsl(40 30% 93%), transparent)" }}
+        />
+
+        {/* ─── Hero image ─── */}
+        <div className="relative w-full h-[230px] overflow-hidden">
           <img
             src={heroImage}
             alt="Calendar hero"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
             width={1024}
             height={640}
           />
-          {/* Diagonal blue overlay */}
+          {/* Dark gradient for text readability */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.15) 70%, rgba(0,0,0,0.35) 100%)",
+            }}
+          />
+          {/* Diagonal blue overlay — sharper angled cut with gradient */}
           <svg
             className="absolute bottom-0 left-0 w-full"
-            viewBox="0 0 440 80"
+            viewBox="0 0 460 90"
             preserveAspectRatio="none"
-            style={{ height: "80px" }}
+            style={{ height: "90px" }}
           >
-            <polygon points="0,80 440,80 440,20 300,80 0,50" fill="hsl(207, 90%, 54%)" opacity="0.9" />
-            <polygon points="200,80 440,80 440,50 280,80" fill="hsl(207, 85%, 62%)" opacity="0.7" />
+            <defs>
+              <linearGradient id="blueGrad1" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="hsl(207, 85%, 38%)" />
+                <stop offset="100%" stopColor="hsl(207, 90%, 58%)" />
+              </linearGradient>
+              <linearGradient id="blueGrad2" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="hsl(207, 80%, 52%)" />
+                <stop offset="100%" stopColor="hsl(200, 85%, 68%)" />
+              </linearGradient>
+            </defs>
+            {/* Main diagonal shape */}
+            <polygon points="0,90 460,90 460,15 320,90 0,55" fill="url(#blueGrad1)" opacity="0.92" />
+            {/* Secondary lighter accent */}
+            <polygon points="220,90 460,90 460,45 300,90" fill="url(#blueGrad2)" opacity="0.75" />
+            {/* Top edge highlight */}
+            <line x1="0" y1="55" x2="460" y2="15" stroke="hsl(207, 90%, 70%)" strokeWidth="0.5" opacity="0.5" />
           </svg>
+
           {/* Month/Year overlay */}
-          <div className="absolute bottom-3 right-4 text-right z-10">
-            <div className="text-primary-foreground text-sm font-medium tracking-widest">{year}</div>
-            <div className="text-primary-foreground text-2xl font-black tracking-wider leading-none">
+          <div className="absolute bottom-4 right-5 text-right z-10">
+            <div
+              className="text-sm font-semibold tracking-[0.3em] mb-0.5"
+              style={{ color: "hsl(0 0% 100% / 0.9)", textShadow: "0 1px 4px rgba(0,0,0,0.3)" }}
+            >
+              {year}
+            </div>
+            <div
+              className="text-[28px] font-black tracking-[0.15em] leading-none"
+              style={{ color: "hsl(0 0% 100%)", textShadow: "0 2px 8px rgba(0,0,0,0.35)" }}
+            >
               {MONTH_NAMES[month]}
             </div>
           </div>
         </div>
 
-        {/* Content area */}
-        <div className="p-4 pt-3">
-          <div className="flex flex-col md:flex-row gap-4">
+        {/* ─── Content area ─── */}
+        <div className="px-5 py-4">
+          <div className="flex flex-col md:flex-row gap-5">
             {/* Notes */}
-            <div className="md:w-[35%] w-full border-r-0 md:border-r border-calendar-line md:pr-4">
+            <div className="md:w-[33%] w-full md:border-r md:border-calendar-line/60 md:pr-5">
               <NotesSection />
             </div>
             {/* Calendar grid */}
-            <div className="md:w-[65%] w-full">
+            <div className="md:w-[67%] w-full">
               <CalendarHeader month={month} year={year} onPrev={handlePrev} onNext={handleNext} />
               <CalendarGrid month={month} year={year} dateRange={dateRange} onDateClick={handleDateClick} />
             </div>
@@ -137,17 +207,27 @@ const WallCalendar = () => {
 
           {/* Selected range display */}
           {dateRange.start && (
-            <div className="mt-3 pt-3 border-t border-calendar-line text-center text-xs text-muted-foreground">
-              <span className="font-medium text-primary">{formatDate(dateRange.start)}</span>
+            <div className="mt-4 pt-3 border-t border-calendar-line/50 text-center text-xs text-muted-foreground animate-fade-in">
+              <span className="inline-flex items-center gap-1 font-semibold text-primary">
+                {formatDate(dateRange.start)}
+              </span>
               {dateRange.end && (
                 <>
-                  <span className="mx-2">→</span>
-                  <span className="font-medium text-primary">{formatDate(dateRange.end)}</span>
+                  <span className="mx-2.5 text-muted-foreground/50">—</span>
+                  <span className="inline-flex items-center gap-1 font-semibold text-primary">
+                    {formatDate(dateRange.end)}
+                  </span>
                 </>
               )}
             </div>
           )}
         </div>
+
+        {/* Paper bottom edge shadow */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-px"
+          style={{ background: "linear-gradient(90deg, transparent, hsl(30 10% 80%), transparent)" }}
+        />
       </div>
     </div>
   );

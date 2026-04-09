@@ -26,13 +26,11 @@ const CalendarGrid = ({ month, year, dateRange, onDateClick }: CalendarGridProps
   const cells = useMemo(() => {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-    // Monday = 0
-    let startDow = (firstDay.getDay() + 6) % 7;
+    const startDow = (firstDay.getDay() + 6) % 7;
     const daysInMonth = lastDay.getDate();
 
     const result: { day: number; month: number; year: number; current: boolean }[] = [];
 
-    // Previous month fill
     const prevMonth = new Date(year, month, 0);
     for (let i = startDow - 1; i >= 0; i--) {
       result.push({
@@ -43,12 +41,10 @@ const CalendarGrid = ({ month, year, dateRange, onDateClick }: CalendarGridProps
       });
     }
 
-    // Current month
     for (let d = 1; d <= daysInMonth; d++) {
       result.push({ day: d, month, year, current: true });
     }
 
-    // Next month fill
     const remaining = 7 - (result.length % 7);
     if (remaining < 7) {
       for (let d = 1; d <= remaining; d++) {
@@ -70,12 +66,12 @@ const CalendarGrid = ({ month, year, dateRange, onDateClick }: CalendarGridProps
   return (
     <div>
       {/* Day headers */}
-      <div className="grid grid-cols-7 mb-1">
+      <div className="grid grid-cols-7 mb-2 border-b border-calendar-line/40 pb-1.5">
         {DAY_LABELS.map((d, i) => (
           <div
             key={d}
-            className={`text-center text-[10px] font-bold tracking-wider pb-1 ${
-              i >= 5 ? "text-primary" : "text-muted-foreground"
+            className={`text-center text-[9px] font-bold tracking-[0.12em] ${
+              i >= 5 ? "text-primary/80" : "text-muted-foreground/60"
             }`}
           >
             {d}
@@ -84,7 +80,7 @@ const CalendarGrid = ({ month, year, dateRange, onDateClick }: CalendarGridProps
       </div>
 
       {/* Date cells */}
-      <div className="grid grid-cols-7">
+      <div className="grid grid-cols-7 gap-y-0.5">
         {cells.map((cell, idx) => {
           const key = toKey(cell.year, cell.month, cell.day);
           const dow = idx % 7;
@@ -99,25 +95,41 @@ const CalendarGrid = ({ month, year, dateRange, onDateClick }: CalendarGridProps
             inRange = cellDate > startDate && cellDate < endDate;
           }
 
+          const isRangeStart = isStart && dateRange.end;
+          const isRangeEnd = isEnd && dateRange.start;
+
           return (
             <button
               key={idx}
               onClick={() => cell.current && onDateClick(key)}
+              disabled={!cell.current}
               className={`
-                relative text-center text-xs py-1.5 transition-all duration-150
-                ${!cell.current ? "text-muted-foreground/30 cursor-default" : "cursor-pointer hover:scale-110"}
-                ${cell.current && isWeekend && !isSelected ? "text-calendar-weekend font-semibold" : ""}
-                ${cell.current && !isWeekend && !isSelected && !inRange ? "text-foreground" : ""}
-                ${isSelected ? "text-primary-foreground font-bold" : ""}
+                relative flex items-center justify-center h-8 text-[11px] font-medium
+                transition-all duration-200 ease-out
+                ${!cell.current ? "text-muted-foreground/20 cursor-default" : "cursor-pointer"}
+                ${cell.current && !isSelected && !inRange ? "hover:bg-calendar-hover hover:rounded-full hover:scale-110" : ""}
+                ${cell.current && isWeekend && !isSelected && !inRange ? "text-calendar-weekend" : ""}
+                ${cell.current && !isWeekend && !isSelected && !inRange ? "text-foreground/80" : ""}
                 ${inRange ? "bg-calendar-range" : ""}
+                ${isRangeStart ? "rounded-l-full" : ""}
+                ${isRangeEnd ? "rounded-r-full" : ""}
+                ${isSelected ? "z-10" : ""}
               `}
             >
               {isSelected && (
-                <span className="absolute inset-0 flex items-center justify-center">
-                  <span className="w-7 h-7 rounded-full bg-primary animate-[scale-in_0.15s_ease-out]" />
-                </span>
+                <span
+                  className="absolute w-7 h-7 rounded-full transition-transform duration-200"
+                  style={{
+                    background: "linear-gradient(135deg, hsl(207 90% 50%), hsl(207 85% 58%))",
+                    boxShadow: "0 2px 8px hsl(207 90% 54% / 0.4)",
+                  }}
+                />
               )}
-              <span className="relative z-10">{cell.day}</span>
+              <span className={`relative z-10 ${isSelected ? "font-bold" : ""}`}
+                style={isSelected ? { color: "hsl(0 0% 100%)" } : undefined}
+              >
+                {cell.day}
+              </span>
             </button>
           );
         })}
