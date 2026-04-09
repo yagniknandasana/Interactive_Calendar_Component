@@ -47,6 +47,15 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        calendar: {
+          paper: "hsl(var(--calendar-paper))",
+          shadow: "hsl(var(--calendar-shadow))",
+          line: "hsl(var(--calendar-line))",
+          weekend: "hsl(var(--calendar-weekend))",
+          hover: "hsl(var(--calendar-hover))",
+          range: "hsl(var(--calendar-range))",
+        },
+        wall: "hsl(var(--wall-bg))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
