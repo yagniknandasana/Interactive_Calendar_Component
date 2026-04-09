@@ -1,16 +1,21 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import WallCalendar from "@/components/calendar/WallCalendar";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
-  return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+const Index = () => (
+  <div
+    className="min-h-screen bg-wall py-12 px-4 flex flex-col items-center"
+    style={{
+      backgroundImage:
+        "url(\"data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='60' height='60' fill='%23e8e2d8'/%3E%3Crect x='0' y='0' width='30' height='30' fill='%23e5dfd4' opacity='0.4'/%3E%3C/svg%3E\")",
+    }}
+  >
+    {/* Page header */}
+    <div className="text-center mb-8">
+      <h1 className="text-3xl font-bold tracking-tight text-foreground">Wall Calendar 2025</h1>
+      <p className="text-sm text-muted-foreground mt-1">Select date ranges and add your notes</p>
     </div>
-  );
-};
 
-const Index = PlaceholderIndex;
+    <WallCalendar />
+  </div>
+);
 
 export default Index;
