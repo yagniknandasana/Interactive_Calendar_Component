@@ -105,6 +105,14 @@ const WallCalendar = () => {
         />
       </div>
 
+      {/* ─── Swinging body (string + spiral + card) ─── */}
+      <div
+        className="flex flex-col items-center w-full transition-transform duration-700 ease-out"
+        style={{
+          transformOrigin: "top center",
+          transform: `rotate(${mousePos.x * 1.2}deg)`,
+        }}
+      >
       {/* ─── Hanging string ─── */}
       <div
         className="w-[1.5px] h-10"
