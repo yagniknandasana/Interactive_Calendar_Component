@@ -63,10 +63,31 @@ const WallCalendar = () => {
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
 
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    setMousePos({ x, y });
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setMousePos({ x: 0, y: 0 });
+  }, []);
+
   const RINGS = 17;
 
   return (
-    <div className="flex flex-col items-center select-none">
+    <div
+      ref={containerRef}
+      className="flex flex-col items-center select-none"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ transformOrigin: "top center" }}
+    >
       {/* ─── Wall hook ─── */}
       <div className="relative w-6 h-6 mb-0">
         {/* Nail / screw head */}
