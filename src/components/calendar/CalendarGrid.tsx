@@ -12,6 +12,8 @@ interface CalendarGridProps {
   year: number;
   dateRange: DateRange;
   onDateClick: (dateStr: string) => void;
+  datesWithNotes: Set<string>;
+  hasRangeNote: (dateKey: string) => boolean;
 }
 
 function toKey(y: number, m: number, d: number) {
@@ -22,7 +24,7 @@ function parseKey(k: string) {
   return new Date(k + "T00:00:00");
 }
 
-const CalendarGrid = ({ month, year, dateRange, onDateClick }: CalendarGridProps) => {
+const CalendarGrid = ({ month, year, dateRange, onDateClick, datesWithNotes, hasRangeNote }: CalendarGridProps) => {
   const cells = useMemo(() => {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
@@ -98,13 +100,16 @@ const CalendarGrid = ({ month, year, dateRange, onDateClick }: CalendarGridProps
           const isRangeStart = isStart && dateRange.end;
           const isRangeEnd = isEnd && dateRange.start;
 
+          const hasDateNote = cell.current && datesWithNotes.has(key);
+          const hasRangeNoteIndicator = cell.current && hasRangeNote(key);
+
           return (
             <button
               key={idx}
               onClick={() => cell.current && onDateClick(key)}
               disabled={!cell.current}
               className={`
-                relative flex items-center justify-center h-8 text-[11px] font-medium
+                relative flex flex-col items-center justify-center h-9 text-[11px] font-medium
                 transition-all duration-200 ease-out
                 ${!cell.current ? "text-muted-foreground/20 cursor-default" : "cursor-pointer"}
                 ${cell.current && !isSelected && !inRange ? "hover:bg-calendar-hover hover:rounded-full hover:scale-110" : ""}
@@ -125,11 +130,29 @@ const CalendarGrid = ({ month, year, dateRange, onDateClick }: CalendarGridProps
                   }}
                 />
               )}
-              <span className={`relative z-10 ${isSelected ? "font-bold" : ""}`}
+              <span
+                className={`relative z-10 ${isSelected ? "font-bold" : ""}`}
                 style={isSelected ? { color: "hsl(0 0% 100%)" } : undefined}
               >
                 {cell.day}
               </span>
+              {/* Note indicators */}
+              {cell.current && !isSelected && (hasDateNote || hasRangeNoteIndicator) && (
+                <span className="flex gap-0.5 absolute bottom-0.5 z-10">
+                  {hasDateNote && (
+                    <span
+                      className="w-1 h-1 rounded-full"
+                      style={{ background: "hsl(var(--primary))" }}
+                    />
+                  )}
+                  {hasRangeNoteIndicator && (
+                    <span
+                      className="w-2.5 h-0.5 rounded-full"
+                      style={{ background: "hsl(var(--accent) / 0.7)" }}
+                    />
+                  )}
+                </span>
+              )}
             </button>
           );
         })}
