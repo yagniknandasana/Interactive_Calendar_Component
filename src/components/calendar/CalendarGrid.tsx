@@ -118,10 +118,10 @@ const CalendarGrid = ({ month, year, dateRange, onDateClick }: CalendarGridProps
             >
               {isSelected && (
                 <span
-                  className="absolute w-7 h-7 rounded-full transition-transform duration-200"
+                  className="absolute w-7 h-7 rounded-full animate-date-pop"
                   style={{
-                    background: "linear-gradient(135deg, hsl(207 90% 50%), hsl(207 85% 58%))",
-                    boxShadow: "0 2px 8px hsl(207 90% 54% / 0.4)",
+                    background: "linear-gradient(135deg, hsl(207 90% 48%), hsl(207 85% 60%))",
+                    boxShadow: "0 2px 10px hsl(207 90% 54% / 0.45), 0 0 0 2px hsl(207 90% 54% / 0.15)",
                   }}
                 />
               )}
