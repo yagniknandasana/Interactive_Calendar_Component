@@ -167,9 +167,12 @@ const WallCalendar = () => {
           <img
             src={heroImage}
             alt="Calendar hero"
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+            className="w-full h-full object-cover transition-transform duration-700 ease-out"
             width={1024}
             height={640}
+            style={{
+              transform: `scale(1.05) translate(${mousePos.x * -8}px, ${mousePos.y * -5}px)`,
+            }}
           />
           {/* Dark gradient for text readability */}
           <div
