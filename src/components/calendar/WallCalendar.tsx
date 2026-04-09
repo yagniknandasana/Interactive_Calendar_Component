@@ -258,6 +258,7 @@ const WallCalendar = () => {
           style={{ background: "linear-gradient(90deg, transparent, hsl(30 10% 80%), transparent)" }}
         />
       </div>
+      </div>{/* end swinging body */}
     </div>
   );
 };
