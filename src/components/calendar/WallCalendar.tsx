@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import CalendarHeader from "./CalendarHeader";
 import CalendarGrid from "./CalendarGrid";
 import NotesSection from "./NotesSection";
@@ -63,10 +63,31 @@ const WallCalendar = () => {
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
 
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    setMousePos({ x, y });
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setMousePos({ x: 0, y: 0 });
+  }, []);
+
   const RINGS = 17;
 
   return (
-    <div className="flex flex-col items-center select-none">
+    <div
+      ref={containerRef}
+      className="flex flex-col items-center select-none"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ transformOrigin: "top center" }}
+    >
       {/* ─── Wall hook ─── */}
       <div className="relative w-6 h-6 mb-0">
         {/* Nail / screw head */}
@@ -84,6 +105,14 @@ const WallCalendar = () => {
         />
       </div>
 
+      {/* ─── Swinging body (string + spiral + card) ─── */}
+      <div
+        className="flex flex-col items-center w-full transition-transform duration-700 ease-out"
+        style={{
+          transformOrigin: "top center",
+          transform: `rotate(${mousePos.x * 1.2}deg)`,
+        }}
+      >
       {/* ─── Hanging string ─── */}
       <div
         className="w-[1.5px] h-10"
@@ -138,9 +167,12 @@ const WallCalendar = () => {
           <img
             src={heroImage}
             alt="Calendar hero"
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+            className="w-full h-full object-cover transition-transform duration-700 ease-out"
             width={1024}
             height={640}
+            style={{
+              transform: `scale(1.05) translate(${mousePos.x * -8}px, ${mousePos.y * -5}px)`,
+            }}
           />
           {/* Dark gradient for text readability */}
           <div
@@ -229,6 +261,7 @@ const WallCalendar = () => {
           style={{ background: "linear-gradient(90deg, transparent, hsl(30 10% 80%), transparent)" }}
         />
       </div>
+      </div>{/* end swinging body */}
     </div>
   );
 };
